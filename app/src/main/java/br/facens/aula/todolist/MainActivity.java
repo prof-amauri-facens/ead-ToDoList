@@ -24,6 +24,7 @@ import br.facens.aula.todolist.model.Task;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Declaração dos elementos de interface do usuário
     private EditText editTextTaskTitle;
     private EditText editTextTaskDescription;
     private Spinner spinnerPriority;
@@ -37,84 +38,106 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Inicialização dos elementos de interface do usuário
         editTextTaskTitle = findViewById(R.id.editTextTaskTitle);
         editTextTaskDescription = findViewById(R.id.editTextTaskDescription);
         spinnerPriority = findViewById(R.id.spinnerPriority);
         buttonAddTask = findViewById(R.id.buttonAddTask);
         recyclerViewTasks = findViewById(R.id.recyclerViewTasks);
 
-        // Configurar o RecyclerView
+        // Configuração do RecyclerView
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(this));
         taskAdapter = new TaskAdapter(tasks);
         recyclerViewTasks.setAdapter(taskAdapter);
 
+        // Configuração do Spinner para as prioridades das tarefas
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.priorities, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPriority.setAdapter(adapter);
 
+        // Configuração do botão para adicionar uma nova tarefa
         buttonAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Obtenção dos dados da nova tarefa
                 String taskTitle = editTextTaskTitle.getText().toString().trim();
                 String taskDescription = editTextTaskDescription.getText().toString().trim();
                 String taskPriority = spinnerPriority.getSelectedItem().toString();
+
+                // Verificação se o título da tarefa não está vazio
                 if (!taskTitle.isEmpty()) {
+                    // Criação de uma nova instância da classe Task com os dados informados
                     Task task = new Task();
                     task.setTitle(taskTitle);
                     task.setDescription(taskDescription);
                     task.setPriority(taskPriority);
+
+                    // Adição da nova tarefa à lista de tarefas e notificação do adaptador sobre a mudança
                     tasks.add(task);
                     taskAdapter.notifyDataSetChanged();
+
+                    // Limpeza dos campos de entrada de dados
                     editTextTaskTitle.setText("");
                     editTextTaskDescription.setText("");
                 } else {
+                    // Exibição de um aviso se o título da tarefa estiver vazio
                     Toast.makeText(getApplicationContext(), "Digite um título para a tarefa", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    // Classe interna para o adaptador do RecyclerView
     private class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
         private List<Task> tasks;
 
+        // Construtor que recebe a lista de tarefas
         public TaskAdapter(List<Task> tasks) {
             this.tasks = tasks;
         }
 
+        // Método que cria novas visualizações (layout) para os itens da lista
         @NonNull
         @Override
         public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            // Infla o layout do item de tarefa e retorna uma nova instância de TaskViewHolder
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item, parent, false);
             return new TaskViewHolder(view);
         }
 
+        // Método que atualiza o conteúdo das visualizações com base nos dados da tarefa
         @Override
         public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
             Task task = tasks.get(position);
             holder.bind(task);
         }
 
+        // Método que retorna o número total de itens na lista de tarefas
         @Override
         public int getItemCount() {
             return tasks.size();
         }
 
+        // Classe interna que representa cada item de tarefa na lista
         public class TaskViewHolder extends RecyclerView.ViewHolder {
             private TextView textViewTitle;
             private TextView textViewDescription;
             private TextView textViewPriority;
             private CheckBox checkBoxCompleted;
 
+            // Construtor que recebe a visualização do item de tarefa
             public TaskViewHolder(@NonNull View itemView) {
                 super(itemView);
+                // Inicializa os elementos de interface do item de tarefa
                 textViewTitle = itemView.findViewById(R.id.textViewTitle);
                 textViewDescription = itemView.findViewById(R.id.textViewDescription);
                 textViewPriority = itemView.findViewById(R.id.textViewPriority);
                 checkBoxCompleted = itemView.findViewById(R.id.checkBoxCompleted);
             }
 
+            // Método que associa os dados da tarefa aos elementos de interface do item de tarefa
             public void bind(Task task) {
                 textViewTitle.setText("Título: " + task.getTitle());
                 textViewDescription.setText("Descrição: " + task.getDescription());
