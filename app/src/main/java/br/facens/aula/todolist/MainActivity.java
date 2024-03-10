@@ -1,5 +1,6 @@
 package br.facens.aula.todolist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextTaskDescription;
     private Spinner spinnerPriority;
     private Button buttonAddTask;
+    private Button buttonSendTasks;
     private RecyclerView recyclerViewTasks;
     private TaskAdapter taskAdapter;
     private List<Task> tasks = new ArrayList<>();
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         spinnerPriority = findViewById(R.id.spinnerPriority);
         buttonAddTask = findViewById(R.id.buttonAddTask);
         recyclerViewTasks = findViewById(R.id.recyclerViewTasks);
+        buttonSendTasks = findViewById(R.id.buttonSendTasks);
 
         // Configuração do RecyclerView
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(this));
@@ -86,6 +89,40 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        buttonSendTasks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendTasksByEmail();
+            }
+        });
+    }
+
+    private void sendTasksByEmail() {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        /*
+        Outros tipos possiveis são, por exemplo:
+        message/rfc822: Para enviar um email com formato MIME, que pode incluir anexos e formatação avançada.
+        text/html: Para enviar um email com conteúdo HTML, permitindo formatação avançada e elementos interativos.
+        image/jpeg, image/png, etc.: Para enviar imagens como anexos no email.
+        application/pdf, application/msword, etc.: Para enviar arquivos PDF, documentos do Word, e
+        outros tipos de arquivos como anexos.
+         */
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Lista de Tarefas");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, generateTasksText());
+        startActivity(Intent.createChooser(emailIntent, "Enviar Lista de Tarefas"));
+    }
+
+    private String generateTasksText() {
+        StringBuilder sb = new StringBuilder();
+        for (Task task : tasks) {
+            sb.append("Título: ").append(task.getTitle()).append("\n");
+            sb.append("Descrição: ").append(task.getDescription()).append("\n");
+            sb.append("Prioridade: ").append(task.getPriority()).append("\n");
+            sb.append("Concluída: ").append(task.isCompleted() ? "Sim" : "Não").append("\n\n");
+        }
+        return sb.toString();
     }
 
     // Classe interna para o adaptador do RecyclerView
