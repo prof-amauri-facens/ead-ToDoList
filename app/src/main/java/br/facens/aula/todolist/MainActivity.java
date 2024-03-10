@@ -101,16 +101,50 @@ public class MainActivity extends AppCompatActivity {
         // Método que cria novas visualizações (layout) para os itens da lista
         @NonNull
         @Override
+        /*
+         Este método é chamado quando o RecyclerView precisa criar uma nova visualização (item de lista)
+         para exibir. Ele recebe dois parâmetros: parent, que é o ViewGroup no qual a nova visualização
+         será inserida após a criação, e viewType, que é o tipo de visualização, caso o RecyclerView
+         tenha vários tipos de itens de lista.
+         */
         public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // Infla o layout do item de tarefa e retorna uma nova instância de TaskViewHolder
+            /*
+            Aqui, estamos inflando o layout task_item.xml para criar a visualização do item da lista.
+            O LayoutInflater é usado para inflar layouts XML em objetos de visualização reais. parent.getContext()
+            retorna o contexto do ViewGroup pai, que é necessário para o LayoutInflater. O método inflate cria uma
+            nova instância de View a partir do arquivo de layout XML task_item.xml. O terceiro argumento false
+            indica que a visualização recém-criada não deve ser anexada ao ViewGroup pai automaticamente,
+            pois o RecyclerView cuidará disso.
+             */
+            /*
+            O processo de inflar um layout envolve a interpretação do arquivo XML para criar os objetos de visualização
+            correspondentes, como TextView, Button, LinearLayout, entre outros, conforme definido no arquivo XML.
+            Isso permite que você defina a estrutura e a aparência de suas interfaces de usuário de forma declarativa,
+            sem precisar criar manualmente cada elemento de interface no código Java.
+             */
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item, parent, false);
             return new TaskViewHolder(view);
         }
 
         // Método que atualiza o conteúdo das visualizações com base nos dados da tarefa
         @Override
+        /*
+        Este método é chamado pelo RecyclerView para exibir os dados de uma tarefa em um item da lista
+        específico. Ele recebe dois parâmetros: holder, que é a instância do TaskViewHolder que contém
+        os elementos de interface do item da lista, e position, que é a posição da tarefa na lista de tarefas.
+         */
         public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
+            /*
+            Aqui, estamos obtendo a tarefa na posição especificada da lista de tarefas. A lista de
+            tarefas (tasks) é a fonte de dados que contém todas as tarefas a serem exibidas na lista.
+             */
             Task task = tasks.get(position);
+            /*
+             Em seguida, estamos chamando o método bind do TaskViewHolder para associar os dados da tarefa
+             aos elementos de interface do item da lista. O método bind é responsável por atualizar os elementos
+             de interface (como TextView para título, descrição e prioridade, e CheckBox para concluído)
+             com os dados da tarefa específica.
+             */
             holder.bind(task);
         }
 
